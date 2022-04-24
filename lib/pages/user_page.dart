@@ -16,14 +16,14 @@ class _UserPageState extends State<UserPage> {
   @override
   void initState() {
     super.initState();
-    DataUser().getUserList(query: 'query');
+    DataUser().getUser(query: 'query');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('user'),
+        title: const Text('Lista de Usuarios'),
         centerTitle: true,
         actions: [
           IconButton(
@@ -39,8 +39,8 @@ class _UserPageState extends State<UserPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: FutureBuilder<List<UserModel>>(
-            future: DataUser().getUserList(query: ''),
+        child: FutureBuilder<List<UserModel>?>(
+            future: DataUser().getUser(query: ''),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Center(child: CircularProgressIndicator());
@@ -49,12 +49,17 @@ class _UserPageState extends State<UserPage> {
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       return ListTile(
-                        title: Text(
-                          snapshot.data![index].name.toString(),
-                        ),
-                        subtitle: Text(
-                          snapshot.data![index].email.toString(),
-                        ),
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(snapshot.data![index]
+                                .owner!.avatarUrl.toString(),),
+                          ),
+                          title: Text(
+                      snapshot.data![index].name.toString(),
+                      ),
+                      subtitle: Text(
+                      snapshot.data![index].htmlUrl.toString(),
+                      )
+                      ,
                       );
                     });
               }
